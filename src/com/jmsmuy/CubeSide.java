@@ -1,5 +1,8 @@
 package com.jmsmuy;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static com.jmsmuy.Main.RUBIK_SIZE;
 
 public class CubeSide {
@@ -94,11 +97,24 @@ public class CubeSide {
     public boolean checkColumnsVsRows() {
         for (int x = 0; x < RUBIK_SIZE; x++) {
             for (int y = 0; y < RUBIK_SIZE; y++) {
-                if(!columns[y].getSquare(x).getColor().equals(rows[x].getSquare(y).getColor())){
+                if (!columns[y].getSquare(x).getColor().equals(rows[x].getSquare(y).getColor())) {
                     return true;
                 }
             }
         }
         return false;
+    }
+
+    public List<Square> getAllByColor(SquareColor color) {
+        List<Square> squares = new ArrayList<>();
+        for (int x = 0; x < RUBIK_SIZE; x++) {
+            for (int y = 0; y < RUBIK_SIZE; y++) {
+                Square currentSquare = columns[x].getSquare(y);
+                if (currentSquare.getColor().equals(color)) {
+                    squares.add(currentSquare);
+                }
+            }
+        }
+        return squares;
     }
 }
