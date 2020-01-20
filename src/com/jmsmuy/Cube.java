@@ -3,10 +3,10 @@ package com.jmsmuy;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.jmsmuy.Main.DEBUG;
-import static com.jmsmuy.Main.RUBIK_SIZE;
+import static com.jmsmuy.Main.*;
 
 public class Cube {
+
     private CubeSide frontSide;
     private CubeSide rightSide;
     private CubeSide leftSide;
@@ -15,12 +15,25 @@ public class Cube {
     private CubeSide downSide;
 
     public Cube() {
-        frontSide = new CubeSide(SquareColor.GREEN);
-        rightSide = new CubeSide(SquareColor.RED);
-        leftSide = new CubeSide(SquareColor.ORANGE);
-        backSide = new CubeSide(SquareColor.BLUE);
-        upSide = new CubeSide(SquareColor.WHITE);
-        downSide = new CubeSide(SquareColor.YELLOW);
+        frontSide = new CubeSide(SquareColor.GREEN, FRONT_SIDE);
+        rightSide = new CubeSide(SquareColor.RED, RIGHT_SIDE);
+        leftSide = new CubeSide(SquareColor.ORANGE, LEFT_SIDE);
+        backSide = new CubeSide(SquareColor.BLUE, BACK_SIDE);
+        upSide = new CubeSide(SquareColor.WHITE, UP_SIDE);
+        downSide = new CubeSide(SquareColor.YELLOW, DOWN_SIDE);
+    }
+
+    /**
+     * Copy constructor
+     * @param cube
+     */
+    public Cube(Cube cube) {
+        frontSide = new CubeSide(cube.getFrontSide());
+        rightSide = new CubeSide(cube.getRightSide());
+        leftSide = new CubeSide(cube.getLeftSide());
+        backSide = new CubeSide(cube.getBackSide());
+        upSide = new CubeSide(cube.getUpSide());
+        downSide = new CubeSide(cube.getDownSide());
     }
 
     public void doRn() {
@@ -36,7 +49,7 @@ public class Cube {
         backSide.setColumn(0, upColumn.reverseLine());
         downSide.setColumn(RUBIK_SIZE - 1, backColumn.reverseLine());
 
-        if(DEBUG){
+        if (DEBUG) {
             checkCube();
         }
     }
@@ -54,7 +67,7 @@ public class Cube {
         backSide.setColumn(0, downColumn.reverseLine());
         downSide.setColumn(RUBIK_SIZE - 1, frontColumn);
 
-        if(DEBUG){
+        if (DEBUG) {
             checkCube();
         }
     }
@@ -72,7 +85,7 @@ public class Cube {
         backSide.setColumn(RUBIK_SIZE - 1, downColumn.reverseLine());
         downSide.setColumn(0, frontColumn);
 
-        if(DEBUG){
+        if (DEBUG) {
             checkCube();
         }
     }
@@ -90,7 +103,7 @@ public class Cube {
         backSide.setColumn(RUBIK_SIZE - 1, upColumn.reverseLine());
         downSide.setColumn(0, backColumn.reverseLine());
 
-        if(DEBUG){
+        if (DEBUG) {
             checkCube();
         }
     }
@@ -99,16 +112,16 @@ public class Cube {
         upSide.rotateClockwise();
 
         Line frontRow = frontSide.getRow(0);
-        Line leftRow = upSide.getRow(0);
+        Line leftRow = leftSide.getRow(0);
         Line backRow = backSide.getRow(RUBIK_SIZE - 1);
-        Line rightRow = downSide.getRow(0);
+        Line rightRow = rightSide.getRow(0);
 
         frontSide.setRow(0, rightRow);
         leftSide.setRow(0, frontRow);
         backSide.setRow(RUBIK_SIZE - 1, leftRow.reverseLine());
         rightSide.setRow(0, backRow.reverseLine());
 
-        if(DEBUG){
+        if (DEBUG) {
             checkCube();
         }
     }
@@ -117,16 +130,16 @@ public class Cube {
         upSide.rotateCounterClockwise();
 
         Line frontRow = frontSide.getRow(0);
-        Line leftRow = upSide.getRow(0);
+        Line leftRow = leftSide.getRow(0);
         Line backRow = backSide.getRow(RUBIK_SIZE - 1);
-        Line rightRow = downSide.getRow(0);
+        Line rightRow = rightSide.getRow(0);
 
         frontSide.setRow(0, leftRow);
         leftSide.setRow(0, backRow.reverseLine());
         backSide.setRow(RUBIK_SIZE - 1, rightRow.reverseLine());
         rightSide.setRow(0, frontRow);
 
-        if(DEBUG){
+        if (DEBUG) {
             checkCube();
         }
     }
@@ -144,7 +157,7 @@ public class Cube {
         rightSide.setColumn(RUBIK_SIZE - 1, downRow.reverseLine());
         leftSide.setColumn(0, upRow.reverseLine());
 
-        if(DEBUG){
+        if (DEBUG) {
             checkCube();
         }
     }
@@ -162,7 +175,7 @@ public class Cube {
         rightSide.setColumn(RUBIK_SIZE - 1, upRow);
         leftSide.setColumn(0, downRow);
 
-        if(DEBUG){
+        if (DEBUG) {
             checkCube();
         }
     }
@@ -180,7 +193,7 @@ public class Cube {
         rightSide.setColumn(0, upRow);
         leftSide.setColumn(RUBIK_SIZE - 1, downRow);
 
-        if(DEBUG){
+        if (DEBUG) {
             checkCube();
         }
     }
@@ -198,7 +211,7 @@ public class Cube {
         rightSide.setColumn(0, downRow.reverseLine());
         leftSide.setColumn(RUBIK_SIZE - 1, upRow.reverseLine());
 
-        if(DEBUG){
+        if (DEBUG) {
             checkCube();
         }
     }
@@ -216,7 +229,7 @@ public class Cube {
         backSide.setRow(0, rightRow.reverseLine());
         leftSide.setRow(RUBIK_SIZE - 1, backRow.reverseLine());
 
-        if(DEBUG){
+        if (DEBUG) {
             checkCube();
         }
     }
@@ -234,7 +247,7 @@ public class Cube {
         backSide.setRow(0, leftRow.reverseLine());
         leftSide.setRow(RUBIK_SIZE - 1, frontRow);
 
-        if(DEBUG){
+        if (DEBUG) {
             checkCube();
         }
     }
@@ -277,7 +290,7 @@ public class Cube {
      * 1- number of colored squares is correct
      * 2- rows and columns match
      */
-    private void checkCube() {
+    public boolean checkCube() {
         boolean error = false;
         error |= frontSide.checkColumnsVsRows();
         error |= backSide.checkColumnsVsRows();
@@ -287,24 +300,44 @@ public class Cube {
         error |= downSide.checkColumnsVsRows();
         error |= countColors(frontSide, backSide, rightSide, leftSide, upSide, downSide);
 
-        if(error) {
+        if (error) {
             System.out.println("Errors have been found on the cube!");
         }
+        return error;
     }
 
     private boolean countColors(CubeSide... sides) {
-        for(SquareColor color : SquareColor.values()) {
+        for (SquareColor color : SquareColor.values()) {
             List<Square> squares = new ArrayList<>();
-            
-            for(CubeSide side : sides) {
+
+            for (CubeSide side : sides) {
                 squares.addAll(side.getAllByColor(color));
             }
 
-            if(squares.size() != RUBIK_SIZE*RUBIK_SIZE){
+            if (squares.size() != RUBIK_SIZE * RUBIK_SIZE) {
                 System.out.println(String.format("Error, color %s is incorrect, it has %d ocurrences", color.getShortName(), squares.size()));
                 return true;
             }
         }
         return false;
+    }
+
+    /**
+     * returns true if cube is solved!
+     */
+    public boolean checkIfSolved() {
+        boolean solved = true;
+        solved &= frontSide.isSolved();
+        solved &= backSide.isSolved();
+        solved &= leftSide.isSolved();
+        solved &= rightSide.isSolved();
+        solved &= upSide.isSolved();
+        solved &= downSide.isSolved();
+        return solved;
+    }
+
+    public Cube copyCube() {
+        Cube newCube = new Cube(this);
+        return newCube;
     }
 }

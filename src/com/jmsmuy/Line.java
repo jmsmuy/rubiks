@@ -16,6 +16,10 @@ public class Line {
         return squares[i];
     }
 
+    public void setSquare(int i, Square newSquare) {
+        squares[i] = newSquare;
+    }
+
     public Line reverseLine() {
         for (int i = 0; i < RUBIK_SIZE / 2; i++) {
             Square aux = squares[i];
@@ -23,5 +27,9 @@ public class Line {
             squares[RUBIK_SIZE - 1 - i] = aux;
         }
         return this;
+    }
+
+    public Square[] getSquares() {
+        return squares;
     }
 }

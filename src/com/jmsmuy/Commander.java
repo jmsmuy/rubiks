@@ -15,8 +15,12 @@ public class Commander {
                 || (nextLine.equals("Bn"))
                 || (nextLine.equals("Br"))) {
             operator.rotateCube(nextLine);
+        } else if(nextLine.equals("Check")){
+            operator.check();
         } else if(nextLine.equals("Randomize")){
             operator.randomizeCube();
+        } else if(nextLine.equals("Solve")){
+            operator.solveCube();
         } else if(nextLine.equals("Benchmark")){
             operator.benchmark();
         } else if(nextLine.equals("Reset")){

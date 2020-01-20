@@ -13,6 +13,15 @@ public class Main {
     public static final int RUBIK_SIZE = 3;
     private static final long BENCH_TIME = 60000;
     private static final long RANDOM_TIME = 2000;
+
+    public static final String FRONT_SIDE = "F";
+    public static final String RIGHT_SIDE = "R";
+    public static final String LEFT_SIDE = "L";
+    public static final String BACK_SIDE = "B";
+    public static final String UP_SIDE = "U";
+    public static final String DOWN_SIDE = "D";
+    private final List<Method> usefulMethods;
+
     private Cube cube;
     private boolean continueRunning = true;
 
@@ -25,6 +34,14 @@ public class Main {
         cube = new Cube();
         cube.printCube();
 
+        usefulMethods = new ArrayList<>();
+        Method[] allMethods = Cube.class.getDeclaredMethods();
+        for (Method method : allMethods) {
+            if (method.getName().contains("do")) {
+                usefulMethods.add(method);
+            }
+        }
+
         Scanner sc = new Scanner(System.in);
 
         while (continueRunning) {
@@ -34,7 +51,7 @@ public class Main {
 
     public void rotateCube(String instruction) {
         Method calledMethod = null;
-        for (Method method : Cube.class.getDeclaredMethods()) {
+        for (Method method : usefulMethods) {
             if (method.getName().contains(instruction)) {
                 calledMethod = method;
             }
@@ -70,13 +87,6 @@ public class Main {
     }
 
     public void benchmark() {
-        List<Method> usefulMethods = new ArrayList<>();
-        Method[] allMethods = Cube.class.getDeclaredMethods();
-        for (Method method : allMethods) {
-            if (method.getName().contains("do")) {
-                usefulMethods.add(method);
-            }
-        }
         long t = System.currentTimeMillis();
         long startTime = t;
         long end = t + BENCH_TIME;
@@ -102,13 +112,6 @@ public class Main {
     }
 
     public void randomizeCube() {
-        List<Method> usefulMethods = new ArrayList<>();
-        Method[] allMethods = Cube.class.getDeclaredMethods();
-        for (Method method : allMethods) {
-            if (method.getName().contains("do")) {
-                usefulMethods.add(method);
-            }
-        }
         long t = System.currentTimeMillis();
         long end = t + RANDOM_TIME;
         try {
@@ -127,5 +130,23 @@ public class Main {
     public void resetCube() {
         cube = new Cube();
         print();
+    }
+
+    public void solveCube() {
+        long start = System.currentTimeMillis();
+        CubeSolver solver = new CubeSolver(cube);
+        List<ValidMoves> solution = solver.solveCube();
+        for(ValidMoves move : solution) {
+            System.out.print(String.format(" %s ", move.toString()));
+        }
+        long amountTime = (System.currentTimeMillis() - start);
+        System.out.println(String.format("It took %d.%d s to find the solution!", amountTime / 1000, amountTime % 1000));
+    }
+
+    public void check() {
+        boolean error = cube.checkCube();
+        if(!error) {
+            System.out.println("Cube checks alright!");
+        }
     }
 }
