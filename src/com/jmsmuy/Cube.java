@@ -286,6 +286,6 @@ public class Cube {
     }
 
     private boolean countColors(CubeSide... sides) {
-        
+
     }
 }
