@@ -1,5 +1,8 @@
 package com.jmsmuy;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static com.jmsmuy.Main.DEBUG;
 import static com.jmsmuy.Main.RUBIK_SIZE;
 
@@ -283,9 +286,25 @@ public class Cube {
         error |= upSide.checkColumnsVsRows();
         error |= downSide.checkColumnsVsRows();
         error |= countColors(frontSide, backSide, rightSide, leftSide, upSide, downSide);
+
+        if(error) {
+            System.out.println("Errors have been found on the cube!");
+        }
     }
 
     private boolean countColors(CubeSide... sides) {
-        
+        for(SquareColor color : SquareColor.values()) {
+            List<Square> squares = new ArrayList<>();
+            
+            for(CubeSide side : sides) {
+                squares.addAll(side.getAllByColor(color));
+            }
+
+            if(squares.size() != RUBIK_SIZE*RUBIK_SIZE){
+                System.out.println(String.format("Error, color %s is incorrect, it has %d ocurrences", color.getShortName(), squares.size()));
+                return true;
+            }
+        }
+        return false;
     }
 }
