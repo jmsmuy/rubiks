@@ -1,6 +1,5 @@
 package com.jmsmuy;
 
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
@@ -13,6 +12,8 @@ public class Main {
     public static final int RUBIK_SIZE = 3;
     private static final long BENCH_TIME = 60000;
     private static final long RANDOM_TIME = 2000;
+    private static final int NUM_THREADS_SOLVE_POSSIBILITIES = 12;
+    private static final int AMOUNT_EXECUTIONS_PER_BENCHMARK = 100;
 
     public static final String FRONT_SIDE = "F";
     public static final String RIGHT_SIDE = "R";
@@ -20,6 +21,7 @@ public class Main {
     public static final String BACK_SIDE = "B";
     public static final String UP_SIDE = "U";
     public static final String DOWN_SIDE = "D";
+
     private final List<Method> usefulMethods;
 
     private Cube cube;
@@ -27,7 +29,6 @@ public class Main {
 
     public static void main(String[] args) {
         new Main();
-
     }
 
     public Main() {
@@ -86,7 +87,7 @@ public class Main {
         System.out.println("An error has occured!");
     }
 
-    public void benchmark() {
+    public void benchmarkRandom() {
         long t = System.currentTimeMillis();
         long startTime = t;
         long end = t + BENCH_TIME;
@@ -98,8 +99,8 @@ public class Main {
                 int random = new Random().nextInt(usefulMethods.size());
                 usefulMethods.get(random).invoke(cube);
                 opCounter++;
-                progress = ((t-startTime) *100) / BENCH_TIME;
-                if(t % 4000 == 0 && lastProgress != progress){
+                progress = ((t - startTime) * 100) / BENCH_TIME;
+                if (t % 4000 == 0 && lastProgress != progress) {
                     lastProgress = progress;
                     System.out.println(String.format("%d percent completed", progress));
                 }
@@ -133,20 +134,41 @@ public class Main {
     }
 
     public void solveCube() {
-        long start = System.currentTimeMillis();
-        CubeSolver solver = new CubeSolver(cube);
-        List<ValidMoves> solution = solver.solveCube();
-        for(ValidMoves move : solution) {
-            System.out.print(String.format(" %s ", move.toString()));
+        try {
+            long start = System.currentTimeMillis();
+            CubeSolver solver = new CubeSolver(cube, NUM_THREADS_SOLVE_POSSIBILITIES);
+            List<ValidMoves> solution = solver.solveCubeThreaded();
+            for (ValidMoves move : solution) {
+                System.out.print(String.format(" %s ", move.toString()));
+            }
+            long amountTime = (System.currentTimeMillis() - start);
+            System.out.println(String.format("It took %d.%d s to find the solution!", amountTime / 1000, amountTime % 1000));
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        long amountTime = (System.currentTimeMillis() - start);
-        System.out.println(String.format("It took %d.%d s to find the solution!", amountTime / 1000, amountTime % 1000));
     }
 
     public void check() {
         boolean error = cube.checkCube();
-        if(!error) {
+        if (!error) {
             System.out.println("Cube checks alright!");
+        }
+    }
+
+    public void benchmarkSolve() {
+        try {
+
+            for (int threadCount = 1; threadCount <= NUM_THREADS_SOLVE_POSSIBILITIES; threadCount++) {
+                long start = System.currentTimeMillis();
+                for(int execution = 0; execution < AMOUNT_EXECUTIONS_PER_BENCHMARK; execution++) {
+                    CubeSolver solver = new CubeSolver(cube, NUM_THREADS_SOLVE_POSSIBILITIES);
+                    solver.solveCubeThreaded();
+                }
+                long amountTime = (System.currentTimeMillis() - start);
+                System.out.println(String.format("It took %d.%d s to find the solutions with %d threads!", amountTime / 1000, amountTime % 1000, threadCount));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 }

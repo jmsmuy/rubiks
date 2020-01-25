@@ -21,8 +21,10 @@ public class Commander {
             operator.randomizeCube();
         } else if(nextLine.equals("Solve")){
             operator.solveCube();
-        } else if(nextLine.equals("Benchmark")){
-            operator.benchmark();
+        } else if(nextLine.equals("BenchmarkRandom")){
+            operator.benchmarkRandom();
+        } else if(nextLine.equals("BenchmarkSolve")){
+            operator.benchmarkSolve();
         } else if(nextLine.equals("Reset")){
             operator.resetCube();
         } else if(nextLine.equals("Print")){
